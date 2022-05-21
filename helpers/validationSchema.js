@@ -9,6 +9,12 @@ const studentSchema = Joi.object({
   year: Joi.number().required(),
 });
 
+const teacherSchema = Joi.object({
+  name: Joi.string().min(1).max(50).required(),
+  email: Joi.string().min(5).max(100).email().required(),
+  password: Joi.string().min(5).max(50).required(),
+});
+
 const loginSchema = Joi.object({
   email: Joi.string().min(5).max(100).email().required(),
   password: Joi.string().min(5).max(50).required(),
@@ -40,6 +46,7 @@ module.exports = {
   studentSchema,
   loginSchema,
   subjectSchema,
+  teacherSchema,
   questionSchema,
   answerSchema,
   answerUpdateSchema,

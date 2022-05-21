@@ -1,11 +1,11 @@
 const express = require("express");
-const StudentController = require("../controllers/StudentController");
-const studentRouter = express.Router();
+const TeacherController = require("../controllers/TeacherController");
+const teacherRouter = express.Router();
 /**
  * @swagger
  * components:
  *   schemas:
- *     Student:
+ *     Teacher:
  *       type: object
  *       properties:
  *         name:
@@ -14,12 +14,6 @@ const studentRouter = express.Router();
  *           type: string
  *         password:
  *           type: string
- *         enrollmentNo:
- *           type: string
- *         branch:
- *           type: string
- *         year:
- *           type: integer
  *     UserLogin:
  *       type: object
  *       properties:
@@ -32,17 +26,17 @@ const studentRouter = express.Router();
 
 /**
  * @swagger
- * /student/register:
+ * /teacher/register:
  *   post:
- *     summary: Register a student
- *     description: This will a register a student to the app
- *     tags: [Student]
+ *     summary: Register a teacher
+ *     description: This will a register a teacher to the app
+ *     tags: [Teacher]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/Student'
+ *             $ref: '#/components/schemas/Teacher'
  *     responses:
  *       201:
  *         description: Access token with payload
@@ -53,29 +47,22 @@ const studentRouter = express.Router();
  *               properties:
  *                 accessToken:
  *                   type: string
- *                 student:
+ *                 teacher:
  *                   type: object
  *                   properties:
  *                     name:
  *                       type: string
- *                       description: Student's name
  *                     email:
  *                       type: string
- *                     enrollmentNo:
- *                       type: string
- *                     branch:
- *                       type: string
- *                     year:
- *                       type: integer
  */
-studentRouter.post("/register", StudentController.registerUser);
+teacherRouter.post("/register", TeacherController.registerUser);
 /**
  * @swagger
- * /student/login:
+ * /teacher/login:
  *   post:
- *     summary: Login a student
- *     description: This will a login a student to the app
- *     tags: [Student]
+ *     summary: Login a teacher
+ *     description: This will a login a teacher to the app
+ *     tags: [Teacher]
  *     requestBody:
  *       required: true
  *       content:
@@ -92,21 +79,14 @@ studentRouter.post("/register", StudentController.registerUser);
  *               properties:
  *                 accessToken:
  *                   type: string
- *                 student:
+ *                 teacher:
  *                   type: object
  *                   properties:
  *                     name:
  *                       type: string
- *                       description: Student's name
  *                     email:
  *                       type: string
- *                     enrollmentNo:
- *                       type: string
- *                     branch:
- *                       type: string
- *                     year:
- *                       type: integer
  */
-studentRouter.post("/login", StudentController.loginUser);
+teacherRouter.post("/login", TeacherController.loginUser);
 
-module.exports = studentRouter;
+module.exports = teacherRouter;

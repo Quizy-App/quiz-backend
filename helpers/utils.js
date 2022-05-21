@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {
   studentSchema,
+  teacherSchema,
   loginSchema,
   subjectSchema,
   questionSchema,
@@ -13,6 +14,9 @@ require("dotenv/config");
 module.exports = {
   validateStudentDetails: (student) => {
     return studentSchema.validate(student);
+  },
+  validateTeacherDetails: (teacher) => {
+    return teacherSchema.validate(teacher);
   },
   validateLoginDetails: (student) => {
     return loginSchema.validate(student);
