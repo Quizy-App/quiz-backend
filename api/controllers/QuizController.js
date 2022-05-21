@@ -266,7 +266,7 @@ class QuizController {
         return errorResponse(res, 400, "Answers not found", "answer");
       }
       const question = await Question.findById(answer.questionId);
-
+      console.log(question);
       // Fetch specific subject result
       const previousResult = await Quiz.findOne({
         subjectId: question.subjectId,
