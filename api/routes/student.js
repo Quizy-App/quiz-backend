@@ -28,7 +28,15 @@ const studentRouter = express.Router();
  *           type: string
  *         password:
  *           type: string
- *
+ *     Answer:
+ *       type: object
+ *       properties:
+ *         title:
+ *           type: string
+ *         isPreferred:
+ *           type: boolean
+ *         questionId:
+ *           type: string
  */
 
 /**
@@ -158,16 +166,18 @@ studentRouter.get("/profile", authenticate, StudentController.fetchProfile);
  *         description: Data limit
  *     responses:
  *       200:
- *         description: Access token with payload
+ *         description: Question with choices
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 accessToken:
+ *                 question:
  *                   type: string
- *                 student:
- *                   $ref: '#/components/schemas/Student'
+ *                 choices:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Answer'
  */
 studentRouter.get(
   "/fetch_quiz/:subject",
