@@ -8,6 +8,7 @@ const {
   validateLoginDetails,
 } = require("../../helpers/utils");
 const Question = require("../models/Question");
+const Answer = require("../models/Answer");
 
 class StudentController {
   /**
@@ -139,6 +140,8 @@ class StudentController {
         .skip(pageOptions.page * pageOptions.limit)
         .limit(pageOptions.limit);
 
+      const choices = await Answer.find({ questionId: questions[0]._id });
+      console.log(choices);
       // const student = await Student.findById(userId);
       res.status(200).json(questions);
     } catch (error) {
