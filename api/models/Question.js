@@ -6,10 +6,14 @@ const questionSchema = mongoose.Schema({
     required: true,
   },
   marks: {
-    type: String,
+    type: Number,
     required: true,
   },
   subjectId: {
+    type: String,
+    required: true,
+  },
+  userId: {
     type: String,
     required: true,
   },

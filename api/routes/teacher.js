@@ -70,7 +70,7 @@ teacherRouter.post("/register", TeacherController.registerUser);
  *           schema:
  *             $ref: '#/components/schemas/UserLogin'
  *     responses:
- *       201:
+ *       200:
  *         description: Access token with payload
  *         content:
  *           application/json:

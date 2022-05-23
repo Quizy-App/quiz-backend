@@ -13,6 +13,10 @@ const answerSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  userId: {
+    type: String,
+    required: true,
+  },
   createdOn: {
     type: Date,
     default: Date.now,
