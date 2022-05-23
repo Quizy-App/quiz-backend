@@ -7,6 +7,7 @@ const {
   comparePasswords,
   validateLoginDetails,
 } = require("../../helpers/utils");
+const Question = require("../models/Question");
 
 class StudentController {
   /**
@@ -111,9 +112,35 @@ class StudentController {
     try {
       const student = await Student.findById(userId);
       res.status(200).json({
-        accessToken: token,
         student,
       });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
+  };
+
+  /**
+   * @description -This method will fetch quizes for student
+   * @param {object} req - The request payload
+   * @param {object} res - Response from server
+   * @returns {object} - Question with choices
+   */
+  static fetchQuizes = async (req, res) => {
+    const { subject } = req.params;
+
+    const pageOptions = {
+      page: parseInt(req.query.page, 10) || 0,
+      limit: parseInt(req.query.limit, 10) || 10,
+    };
+
+    try {
+      const questions = await Question.find({ subjectId: subject })
+        .skip(pageOptions.page * pageOptions.limit)
+        .limit(pageOptions.limit);
+
+      // const student = await Student.findById(userId);
+      res.status(200).json(questions);
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: "Internal Server Error" });

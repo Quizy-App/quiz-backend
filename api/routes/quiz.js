@@ -382,4 +382,33 @@ quizRouter.post("/attempt_question", QuizController.attemptQuestion);
  */
 quizRouter.get("/fetch_results/:subject", QuizController.fetchResults);
 
+/**
+ * @swagger
+ * /quiz/fetch_subject/{subject}:
+ *   get:
+ *     summary: Get subject
+ *     description: Get subject of specific subject id
+ *     tags: [Quiz]
+ *     parameters:
+ *       - in: path
+ *         name: subject
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Subject Id
+ *     responses:
+ *       200:
+ *         description: Result for subject
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 subject:
+ *                   $ref: '#/components/schemas/Subject'
+ */
+quizRouter.get("/fetch_subject/:subject", QuizController.fetchResults);
+
 module.exports = quizRouter;

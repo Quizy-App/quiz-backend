@@ -99,10 +99,7 @@ class TeacherController {
     const { _id: userId } = req.user;
     try {
       const teacher = await Teacher.findById(userId);
-      res.status(200).json({
-        accessToken: token,
-        teacher,
-      });
+      res.status(200).json(teacher);
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: "Internal Server Error" });
