@@ -132,4 +132,47 @@ studentRouter.post("/login", StudentController.loginUser);
  */
 studentRouter.get("/profile", authenticate, StudentController.fetchProfile);
 
+/**
+ * @swagger
+ * /student/fetch_quiz/{subject}:
+ *   get:
+ *     summary: Fetch quizes
+ *     description: This will fetch profile for student
+ *     tags: [Student]
+ *     parameters:
+ *       - in: path
+ *         name: subject
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Subject Id
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Page number
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Data limit
+ *     responses:
+ *       200:
+ *         description: Access token with payload
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                 student:
+ *                   $ref: '#/components/schemas/Student'
+ */
+studentRouter.get(
+  "/fetch_quiz/:subject",
+  authenticate,
+  StudentController.fetchQuizes
+);
+
 module.exports = studentRouter;

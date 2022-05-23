@@ -129,6 +129,37 @@ class QuizController {
   };
 
   /**
+   * @description -This method will fetch single subject from database
+   * @param {object} req - The request payload
+   * @param {object} res - Response from server
+   * @returns {object} - Subject
+   */
+  static fetchSubject = async (req, res) => {
+    const { subject: subjectId } = req.params;
+    try {
+      // Check for subject
+      // const isExist = await CourseSubject.exists({ year, userId });
+      // if (!isExist) {
+      //   return errorResponse(
+      //     res,
+      //     400,
+      //     "Subjects in this year not found",
+      //     "subjects"
+      //   );
+      // }
+      // Fetch subjects from year id
+      const subject = await CourseSubject.findById(subjectId).select("-userId");
+      return res.status(200).json({
+        message: "Subject",
+        subject,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
+  };
+
+  /**
    * @description -This method will add a question to database
    * @param {object} req - The request payload
    * @param {object} res - Response from server
