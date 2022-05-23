@@ -409,6 +409,6 @@ quizRouter.get("/fetch_results/:subject", QuizController.fetchResults);
  *                 subject:
  *                   $ref: '#/components/schemas/Subject'
  */
-quizRouter.get("/fetch_subject/:subject", QuizController.fetchResults);
+quizRouter.get("/fetch_subject/:subject", QuizController.fetchSubject);
 
 module.exports = quizRouter;
