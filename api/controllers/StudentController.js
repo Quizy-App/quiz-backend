@@ -44,6 +44,7 @@ class StudentController {
       req.body.password = hashedPassword;
       const newStudent = new Student(req.body);
       await newStudent.save();
+      // const savedStudent = await Student.findOne({ email });
       // Create auth token
       delete req.body.password;
       const token = createToken(req.body);
@@ -93,6 +94,26 @@ class StudentController {
       } else {
         return errorResponse(res, 400, "Email or Password is invalid.");
       }
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
+  };
+
+  /**
+   * @description -This method will fetch student profile
+   * @param {object} req - The request payload
+   * @param {object} res - Response from server
+   * @returns {object} - Access token and profile
+   */
+  static fetchProfile = async (req, res) => {
+    const { _id: userId } = req.user;
+    try {
+      const student = await Student.findById(userId);
+      res.status(200).json({
+        accessToken: token,
+        student,
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: "Internal Server Error" });

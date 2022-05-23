@@ -294,7 +294,6 @@ class QuizController {
           },
         },
       ]);
-      console.log(answerUpdate);
       return res.status(200).json({
         message: "Answer Updated",
         // updatedAnswer,
