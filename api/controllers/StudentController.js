@@ -141,9 +141,11 @@ class StudentController {
         .limit(pageOptions.limit);
 
       const choices = await Answer.find({ questionId: questions[0]._id });
-      console.log(choices);
-      // const student = await Student.findById(userId);
-      res.status(200).json(questions);
+      const quiz = {
+        question: questions[0].title,
+        choices,
+      };
+      res.status(200).json(quiz);
     } catch (error) {
       console.log(error);
       res.status(500).json({ msg: "Internal Server Error" });
