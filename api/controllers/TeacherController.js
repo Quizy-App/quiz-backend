@@ -88,6 +88,26 @@ class TeacherController {
       res.status(500).json({ msg: "Internal Server Error" });
     }
   };
+
+  /**
+   * @description -This method will fetch teacher profile
+   * @param {object} req - The request payload
+   * @param {object} res - Response from server
+   * @returns {object} - Access token and profile
+   */
+  static fetchProfile = async (req, res) => {
+    const { _id: userId } = req.user;
+    try {
+      const teacher = await Teacher.findById(userId);
+      res.status(200).json({
+        accessToken: token,
+        teacher,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
+  };
 }
 
 module.exports = TeacherController;

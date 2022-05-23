@@ -1,5 +1,6 @@
 const express = require("express");
 const StudentController = require("../controllers/StudentController");
+const authenticate = require("../../middlewares/authenticate");
 const studentRouter = express.Router();
 /**
  * @swagger
@@ -108,5 +109,27 @@ studentRouter.post("/register", StudentController.registerUser);
  *                       type: integer
  */
 studentRouter.post("/login", StudentController.loginUser);
+
+/**
+ * @swagger
+ * /student/profile:
+ *   get:
+ *     summary: Fetch student profile
+ *     description: This will fetch profile for student
+ *     tags: [Student]
+ *     responses:
+ *       200:
+ *         description: Access token with payload
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 accessToken:
+ *                   type: string
+ *                 student:
+ *                   $ref: '#/components/schemas/Student'
+ */
+studentRouter.get("/profile", authenticate, StudentController.fetchProfile);
 
 module.exports = studentRouter;
