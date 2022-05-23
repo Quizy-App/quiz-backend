@@ -5,7 +5,14 @@ const subjectSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  yearId: {
+  year: {
+    type: Number,
+    required: true,
+  },
+  image: {
+    type: String,
+  },
+  userId: {
     type: String,
     required: true,
   },

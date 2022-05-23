@@ -13,13 +13,36 @@ const Quiz = require("../models/Quiz");
 
 class QuizController {
   /**
+   * @description -This method will fetch all years from database
+   * @param {object} req - The request payload
+   * @param {object} res - Response from server
+   * @returns {object} - Years
+   */
+  static fetchYears = async (req, res) => {
+    const { _id: userId } = req.user;
+    try {
+      // Fetch subjects from year id
+      const years = await CourseYear.find({ userId }).select("year");
+      return res.status(200).json({
+        message: "Years",
+        years,
+      });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ msg: "Internal Server Error" });
+    }
+  };
+
+  /**
    * @description -This method will add an year to database
    * @param {object} req - The request payload
    * @param {object} res - Response from server
    * @returns {object} - Access token
    */
+
   static addCourseYear = async (req, res) => {
     const { year } = req.body;
+    const { _id: userId } = req.user;
     try {
       // Validate data
       if (!year) {
@@ -27,7 +50,7 @@ class QuizController {
       }
 
       // Register the year
-      const courseYear = new CourseYear({ year });
+      const courseYear = new CourseYear({ year, userId });
       await courseYear.save();
 
       return res.status(201).json({
@@ -47,8 +70,10 @@ class QuizController {
    * @returns {object} - Access token
    */
   static addCourseSubject = async (req, res) => {
+    const { _id: userId } = req.user;
+    const newSubject = req.body;
     try {
-      const { error } = validateSubjectDetails(req.body);
+      const { error } = validateSubjectDetails(newSubject);
       // Validate data
       if (error) {
         const errMessage = error.details[0].message;
@@ -56,7 +81,7 @@ class QuizController {
       }
 
       // Register the subject
-      const subject = new CourseSubject(req.body);
+      const subject = new CourseSubject({ ...newSubject, userId });
       await subject.save();
 
       return res.status(201).json({
@@ -77,9 +102,10 @@ class QuizController {
    */
   static fetchSubjects = async (req, res) => {
     const { year } = req.params;
+    const { _id: userId } = req.user;
     try {
       // Check for subject
-      const isExist = await CourseSubject.exists({ yearId: year });
+      const isExist = await CourseSubject.exists({ year, userId });
       if (!isExist) {
         return errorResponse(
           res,
@@ -89,7 +115,9 @@ class QuizController {
         );
       }
       // Fetch subjects from year id
-      const subjects = await CourseSubject.find({ yearId: year });
+      const subjects = await CourseSubject.find({ year, userId }).select(
+        "-userId"
+      );
       return res.status(200).json({
         message: "Subjects",
         subjects,
@@ -108,6 +136,7 @@ class QuizController {
    */
   static addQuestion = async (req, res) => {
     try {
+      const { _id: userId } = req.user;
       const { error } = validateQuestion(req.body);
       // Validate data
       if (error) {
@@ -115,7 +144,7 @@ class QuizController {
         return errorResponse(res, 400, errMessage, "question");
       }
 
-      const question = new Question(req.body);
+      const question = new Question({ ...req.body, userId });
       await question.save();
 
       return res.status(201).json({
@@ -136,9 +165,10 @@ class QuizController {
    */
   static fetchQuestions = async (req, res) => {
     const { subject } = req.params;
+    const { _id: userId } = req.user;
     try {
       // Check for subject
-      const isExist = await Question.exists({ subjectId: subject });
+      const isExist = await Question.exists({ subjectId: subject, userId });
       if (!isExist) {
         return errorResponse(
           res,
@@ -148,7 +178,10 @@ class QuizController {
         );
       }
       // Fetch subjects from year id
-      const questions = await Question.find({ subjectId: subject });
+      const questions = await Question.find({
+        subjectId: subject,
+        userId,
+      }).select("-userId");
       return res.status(200).json({
         message: "Questions",
         questions,
@@ -166,6 +199,7 @@ class QuizController {
    * @returns {object} - New answer
    */
   static addAnswer = async (req, res) => {
+    const { _id: userId } = req.user;
     try {
       const { error } = validateAnswer(req.body);
       // Validate data
@@ -173,13 +207,14 @@ class QuizController {
         const errMessage = error.details[0].message;
         return errorResponse(res, 400, errMessage, "answer");
       }
-
-      const answer = new Answer(req.body);
-      await answer.save();
+      const answerData = req.body.map((ans) => ({ ...ans, userId }));
+      const answers = await Answer.insertMany(answerData);
+      console.log(answers);
+      // await answer.save();
 
       return res.status(201).json({
         message: "Answer Saved",
-        answer: answer._doc.title,
+        // answer: answer._doc.title,
       });
     } catch (error) {
       console.log(error);
@@ -194,10 +229,11 @@ class QuizController {
    * @returns {object} - Answers
    */
   static fetchAnswers = async (req, res) => {
+    const { _id: userId } = req.user;
     const { question } = req.params;
     try {
       // Check for Answer
-      const isExist = await Answer.exists({ questionId: question });
+      const isExist = await Answer.exists({ questionId: question, userId });
       if (!isExist) {
         return errorResponse(
           res,
@@ -207,7 +243,7 @@ class QuizController {
         );
       }
       // Fetch subjects from year id
-      const answers = await Answer.find({ questionId: question });
+      const answers = await Answer.find({ questionId: question, userId });
       return res.status(200).json({
         message: "Answers",
         answers,
@@ -225,7 +261,8 @@ class QuizController {
    * @returns {object} - Message
    */
   static updateAnswer = async (req, res) => {
-    const { answer } = req.params;
+    const { question } = req.params;
+    const { answerId } = req.body;
     try {
       // Check validity
       const { error } = validateUpdateAnswer(req.body);
@@ -234,13 +271,33 @@ class QuizController {
         const errMessage = error.details[0].message;
         return errorResponse(res, 400, errMessage, "answer_update");
       }
+
+      // Fetch answers of this question
+      const answers = await Answer.find({ questionId: question });
+      const updatedAnswers = answers.map((answer) =>
+        answer._doc._id.toString() === answerId
+          ? { ...answer._doc, isPreferred: true }
+          : { ...answer._doc, isPreferred: false }
+      );
+
+      // Again update all the answers
+      // const savedAnswers = await Question.updateMany(
+      //   { questionId: question },
+      //   updatedAnswers
+      // );
       // Update the answer
-      const updatedAnswer = await Answer.findByIdAndUpdate(answer, req.body, {
-        new: true,
-      });
+      const answerUpdate = await Answer.bulkWrite([
+        {
+          updateMany: {
+            filter: { questionId: question, _id: !answerId },
+            update: { isPreferred: false },
+          },
+        },
+      ]);
+      console.log(answerUpdate);
       return res.status(200).json({
         message: "Answer Updated",
-        updatedAnswer,
+        // updatedAnswer,
       });
     } catch (error) {
       console.log(error);
@@ -316,8 +373,10 @@ class QuizController {
    * @returns {object} - Message
    */
   static fetchResults = async (req, res) => {
+    const { subject } = req.params;
+    const { _id: studentId } = req.user;
     try {
-      const results = await Quiz.find();
+      const results = await Quiz.findOne({ subjectId: subject, studentId });
       res.status(200).json({
         message: "Quiz Results",
         results,

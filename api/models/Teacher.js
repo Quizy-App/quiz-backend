@@ -1,19 +1,15 @@
 const mongoose = require("mongoose");
 
-const answerSchema = mongoose.Schema({
-  title: {
+const teacherSchema = mongoose.Schema({
+  name: {
     type: String,
     required: true,
   },
-  isPreferred: {
-    type: Boolean,
-    default: false,
-  },
-  questionId: {
+  email: {
     type: String,
     required: true,
   },
-  userId: {
+  password: {
     type: String,
     required: true,
   },
@@ -23,5 +19,5 @@ const answerSchema = mongoose.Schema({
   },
 });
 
-const Answer = mongoose.model("Answer", answerSchema);
-module.exports = Answer;
+const Teacher = mongoose.model("Teacher", teacherSchema);
+module.exports = Teacher;

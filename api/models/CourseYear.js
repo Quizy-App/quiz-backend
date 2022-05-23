@@ -5,6 +5,10 @@ const yearSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  userId: {
+    type: String,
+    required: true,
+  },
   createdOn: {
     type: Date,
     default: Date.now,
