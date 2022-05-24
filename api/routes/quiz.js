@@ -23,6 +23,8 @@ const quizRouter = express.Router();
  *     Question:
  *       type: object
  *       properties:
+ *         questionNo:
+ *           type: integer
  *         title:
  *           type: string
  *         marks:
@@ -185,22 +187,31 @@ quizRouter.get("/fetch_subjects/:year", QuizController.fetchSubjects);
  *               properties:
  *                 message:
  *                   type: string
- *                 subject:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/Question'
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     question:
+ *                       type: string
  */
 quizRouter.post("/add_question", QuizController.addQuestion);
 
 /**
  * @swagger
- * /quiz/fetch_questions/{subject}:
+ * /quiz/fetch_questions:
  *   get:
  *     summary: Get questions
- *     description: Get questions of specific subject
+ *     description: Get questions of specific subject and question number
  *     tags: [Quiz]
  *     parameters:
- *       - in: path
+ *       - in: query
+ *         name: question_no
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Question number
+ *       - in: query
  *         name: subject
  *         schema:
  *           type: string
@@ -221,7 +232,7 @@ quizRouter.post("/add_question", QuizController.addQuestion);
  *                   items:
  *                     $ref: '#/components/schemas/Question'
  */
-quizRouter.get("/fetch_questions/:subject", QuizController.fetchQuestions);
+quizRouter.get("/fetch_questions", QuizController.fetchQuestion);
 
 /**
  * @swagger

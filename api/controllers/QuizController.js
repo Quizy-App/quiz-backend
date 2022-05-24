@@ -180,7 +180,10 @@ class QuizController {
 
       return res.status(201).json({
         message: "Question Saved",
-        question: question._doc.title,
+        data: {
+          id: question._doc._id,
+          question: question._doc.title,
+        },
       });
     } catch (error) {
       console.log(error);
@@ -189,17 +192,21 @@ class QuizController {
   };
 
   /**
-   * @description -This method will fetch all the questions from database
+   * @description -This method will fetch a question from database
    * @param {object} req - The request payload
    * @param {object} res - Response from server
-   * @returns {object} - Questions
+   * @returns {object} - Question
    */
-  static fetchQuestions = async (req, res) => {
-    const { subject } = req.params;
+  static fetchQuestion = async (req, res) => {
+    const { subject, question_no } = req.query;
     const { _id: userId } = req.user;
     try {
       // Check for subject
-      const isExist = await Question.exists({ subjectId: subject, userId });
+      const isExist = await Question.exists({
+        subjectId: subject,
+        questionNo: question_no,
+        userId,
+      });
       if (!isExist) {
         return errorResponse(
           res,
@@ -209,12 +216,13 @@ class QuizController {
         );
       }
       // Fetch subjects from year id
-      const questions = await Question.find({
+      const questions = await Question.findOne({
         subjectId: subject,
+        questionNo: question_no,
         userId,
       }).select("-userId");
       return res.status(200).json({
-        message: "Questions",
+        message: "Question",
         questions,
       });
     } catch (error) {
