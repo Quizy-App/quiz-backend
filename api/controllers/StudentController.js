@@ -140,6 +140,10 @@ class StudentController {
         .skip(pageOptions.page * pageOptions.limit)
         .limit(pageOptions.limit);
 
+      if (!questions[0]) {
+        return errorResponse(res, 400, "Questions not found");
+      }
+
       const choices = await Answer.find({ questionId: questions[0]._id });
       const quiz = {
         question: questions[0].title,
