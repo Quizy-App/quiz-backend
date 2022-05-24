@@ -28,6 +28,7 @@ const subjectSchema = Joi.object({
 const questionSchema = Joi.object({
   title: Joi.string().min(3).required(),
   marks: Joi.number().required(),
+  questionNo: Joi.number().required(),
   subjectId: Joi.string().required(),
 });
 
